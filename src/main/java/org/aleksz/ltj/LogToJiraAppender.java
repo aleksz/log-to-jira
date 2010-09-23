@@ -1,71 +1,77 @@
 package org.aleksz.ltj;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.Filter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+
+import javax.xml.rpc.ServiceException;
+
+import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
-public class LogToJiraAppender implements Appender {
+public class LogToJiraAppender extends AppenderSkeleton {
 
-	public void addFilter(Filter arg0) {
-		// TODO Auto-generated method stub
+	private String username;
+	private String password;
+	private String project;
+	private JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
+	private JiraSoapService jiraSoapService;
 
+	public LogToJiraAppender() {
+		super();
+		jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
 	}
 
-	public void clearFilters() {
-		// TODO Auto-generated method stub
-
-	}
-
+	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-
 	}
 
-	public void doAppend(LoggingEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public ErrorHandler getErrorHandler() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Filter getFilter() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Layout getLayout() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	@Override
 	public boolean requiresLayout() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public void setErrorHandler(ErrorHandler arg0) {
-		// TODO Auto-generated method stub
-
+	@Override
+	protected void append(LoggingEvent loggingevent) {
+		try {
+			String token = jiraSoapService.login(username, password);
+			RemoteIssueType[] issueTypes = jiraSoapService.getIssueTypes(token);
+			RemoteIssue issue = new RemoteIssue();
+			issue.setProject(project);
+			issue.setType(issueTypes[0].getId());
+			issue.setSummary(loggingevent.getRenderedMessage());
+			jiraSoapService.createIssue(token, issue);
+			jiraSoapService.logout(token);
+		} catch (RemoteAuthenticationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public void setLayout(Layout arg0) {
-		// TODO Auto-generated method stub
-
+	public void setUrl(String url) {
+		try {
+			this.jiraSoapService = jiraSoapServiceServiceLocator.getJirasoapserviceV2(new URL(url));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public void setName(String arg0) {
-		// TODO Auto-generated method stub
-
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
+	}
 }
