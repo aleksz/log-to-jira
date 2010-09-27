@@ -11,15 +11,26 @@ import org.apache.log4j.spi.LoggingEvent;
 
 public class LogToJiraAppender extends AppenderSkeleton {
 
-	private String username;
-	private String password;
-	private String project;
+	private Config config = new Config();
+	private BugReport bugReport = new BugReport(config);
 	private JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
 	private JiraSoapService jiraSoapService;
 
 	public LogToJiraAppender() {
-		super();
 		jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
+	}
+
+	@Override
+	protected void append(LoggingEvent loggingEvent) {
+		try {
+			String token = jiraSoapService.login(config.getUsername(), config.getPassword());
+			jiraSoapService.createIssue(token, bugReport.getIssue(loggingEvent));
+			jiraSoapService.logout(token);
+		} catch (RemoteAuthenticationException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -31,47 +42,29 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		return false;
 	}
 
-	@Override
-	protected void append(LoggingEvent loggingevent) {
-		try {
-			String token = jiraSoapService.login(username, password);
-			RemoteIssueType[] issueTypes = jiraSoapService.getIssueTypes(token);
-			RemoteIssue issue = new RemoteIssue();
-			issue.setProject(project);
-			issue.setType(issueTypes[0].getId());
-			issue.setSummary(loggingevent.getRenderedMessage());
-			jiraSoapService.createIssue(token, issue);
-			jiraSoapService.logout(token);
-		} catch (RemoteAuthenticationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public void setUrl(String url) {
 		try {
 			this.jiraSoapService = jiraSoapServiceServiceLocator.getJirasoapserviceV2(new URL(url));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		config.setUsername(username);
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		config.setPassword(password);
 	}
 
 	public void setProject(String project) {
-		this.project = project;
+		config.setProject(project);
+	}
+
+	public void setIssueTypeId(String issueTypeId) {
+		config.setIssueTypeId(issueTypeId);
 	}
 }

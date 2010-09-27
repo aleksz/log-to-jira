@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+	debug="false">
+
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="jira" class="org.aleksz.ltj.LogToJiraAppender">
+		<param name="url" value="http://localhost:2990/jira/rpc/soap/jirasoapservice-v2"/>
+		<param name="username" value="admin"/>
+		<param name="password" value="admin"/>
+		<param name="project" value="TST"/>
+		<param name="issueTypeId" value="1"/>
+	</appender>
+
+	<root>
+		<level value="info" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="jira" />
+	</root>
+
+</log4j:configuration>
