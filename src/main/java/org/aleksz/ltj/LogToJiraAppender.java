@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 
 public class LogToJiraAppender extends AppenderSkeleton {
@@ -27,9 +28,9 @@ public class LogToJiraAppender extends AppenderSkeleton {
 			jiraSoapService.createIssue(token, bugReport.getIssue(loggingEvent));
 			jiraSoapService.logout(token);
 		} catch (RemoteAuthenticationException e) {
-			e.printStackTrace();
+			errorHandler.error("JIRA auth failed", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			errorHandler.error("JIRA problem", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
 		}
 	}
 
@@ -46,9 +47,9 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		try {
 			this.jiraSoapService = jiraSoapServiceServiceLocator.getJirasoapserviceV2(new URL(url));
 		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
+			throw new IllegalArgumentException(e);
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			errorHandler.error("JIRA connection problem", e, ErrorCode.GENERIC_FAILURE);
 		}
 	}
 
