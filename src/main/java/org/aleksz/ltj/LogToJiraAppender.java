@@ -24,14 +24,27 @@ public class LogToJiraAppender extends AppenderSkeleton {
 	@Override
 	protected void append(LoggingEvent loggingEvent) {
 		try {
+
 			String token = jiraSoapService.login(config.getUsername(), config.getPassword());
-			jiraSoapService.createIssue(token, bugReport.getIssue(loggingEvent));
+			RemoteIssue issue = bugReport.getIssue(loggingEvent);
+			if (!isDuplicate(issue, token)) {
+				jiraSoapService.createIssue(token, issue);
+			}
 			jiraSoapService.logout(token);
+
 		} catch (RemoteAuthenticationException e) {
 			errorHandler.error("JIRA auth failed", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
 		} catch (RemoteException e) {
 			errorHandler.error("JIRA problem", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
 		}
+	}
+
+	private boolean isDuplicate(RemoteIssue issue, String token) throws org.aleksz.ltj.RemoteException, RemoteException {
+		String JQL =
+			"project = " + config.getProject() +
+			" AND summary ~ \"\\\"" + issue.getSummary() + "\\\"\" " +
+			" AND status in (Open, \"In Progress\", Reopened)";
+		return jiraSoapService.getIssuesFromJqlSearch(token, JQL, 1).length > 0;
 	}
 
 	@Override
