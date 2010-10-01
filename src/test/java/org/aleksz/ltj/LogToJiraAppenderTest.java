@@ -58,13 +58,11 @@ public class LogToJiraAppenderTest {
 		expect(appenderService.duplicateExists(issue, TOKEN)).andReturn(false);
 		expect(jiraService.createIssue(TOKEN, issue)).andReturn(issue);
 		expect(jiraService.logout(TOKEN)).andReturn(true);
-		replay(jiraService);
-		replay(appenderService);
+		replay(jiraService, appenderService);
 
 		appender.append(logEvent);
 
-		verify(jiraService);
-		verify(appenderService);
+		verify(jiraService, appenderService);
 	}
 
 	@Test
@@ -76,13 +74,11 @@ public class LogToJiraAppenderTest {
 		expect(appenderService.createIssue(logEvent)).andReturn(issue);
 		expect(appenderService.duplicateExists(issue, TOKEN)).andReturn(true);
 		expect(jiraService.logout(TOKEN)).andReturn(true);
-		replay(jiraService);
-		replay(appenderService);
+		replay(jiraService, appenderService);
 
 		appender.append(logEvent);
 
-		verify(jiraService);
-		verify(appenderService);
+		verify(jiraService, appenderService);
 	}
 
 	private LoggingEvent createTestLoggingEvent() {
