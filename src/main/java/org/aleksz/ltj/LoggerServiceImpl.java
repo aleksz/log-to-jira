@@ -39,10 +39,14 @@ public class LoggerServiceImpl implements LoggerService {
 
 	@Override
 	public boolean duplicateExists(RemoteIssue issue, String token) throws RemoteException, RemoteException {
-		String JQL =
-			"project = " + config.getProject() +
-			" AND summary ~ \"\\\"" + issue.getSummary() + "\\\"\" " +
-			" AND status in (Open, \"In Progress\", Reopened)";
-		return jiraService.getIssuesFromJqlSearch(token, JQL, 1).length > 0;
+
+		StringBuilder JQL = new StringBuilder();
+		JQL.append("project = ");
+		JQL.append(config.getProject());
+		JQL.append(" AND summary ~ \"\\\"");
+		JQL.append(issue.getSummary());
+		JQL.append("\\\"\" AND status in (Open, \"In Progress\", Reopened)");
+
+		return jiraService.getIssuesFromJqlSearch(token, JQL.toString(), 1).length > 0;
 	}
 }

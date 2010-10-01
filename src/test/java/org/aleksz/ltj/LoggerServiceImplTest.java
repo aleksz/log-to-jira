@@ -25,7 +25,7 @@ public class LoggerServiceImplTest {
 	private static final String TOKEN = "tokenValue";
 	private static final String DUPLICATE_JQL =
 		"project = " + PROJECT +
-		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\" " +
+		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\"" +
 		" AND status in (Open, \"In Progress\", Reopened)";
 
 	private LoggerService service;
