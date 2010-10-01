@@ -30,9 +30,8 @@ public class LoggerServiceImpl implements LoggerService {
 
 		StringBuilder result = new StringBuilder();
 
-		for (String line : loggingEvent.getThrowableStrRep()) {
-			result.append(line);
-			result.append("\n");
+		if (loggingEvent.getThrowableInformation() != null) {
+			result.append(Util.toString(loggingEvent.getThrowableInformation().getThrowable()));
 		}
 
 		return result.toString();

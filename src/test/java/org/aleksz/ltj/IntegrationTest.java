@@ -4,9 +4,9 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 
-public class TestAppender {
+public class IntegrationTest {
 
-	private static final Logger LOG = Logger.getLogger(TestAppender.class);
+	private static final Logger LOG = Logger.getLogger(IntegrationTest.class);
 
 	@Test
 	public void logErrorMessage() {
