@@ -9,6 +9,11 @@ public class IntegrationTest {
 	private static final Logger LOG = Logger.getLogger(IntegrationTest.class);
 
 	@Test
+	public void logUniqueException() {
+		LOG.error("Tech error nr " + System.currentTimeMillis());
+	}
+
+	@Test
 	public void logErrorMessage() {
 		LOG.error("This is error message");
 	}
