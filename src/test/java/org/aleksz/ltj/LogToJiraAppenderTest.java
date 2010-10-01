@@ -7,6 +7,9 @@ import static org.easymock.EasyMock.verify;
 
 import java.rmi.RemoteException;
 
+import org.aleksz.ltj.soap.JiraSoapService;
+import org.aleksz.ltj.soap.RemoteAuthenticationException;
+import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -66,7 +69,7 @@ public class LogToJiraAppenderTest {
 	}
 
 	@Test
-	public void appendDuplicate() throws RemoteAuthenticationException, org.aleksz.ltj.RemoteException, RemoteException {
+	public void appendDuplicate() throws RemoteAuthenticationException, org.aleksz.ltj.soap.RemoteException, RemoteException {
 		LoggingEvent logEvent = createTestLoggingEvent();
 		RemoteIssue issue = new RemoteIssue();
 

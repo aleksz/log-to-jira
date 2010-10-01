@@ -9,6 +9,8 @@ import static org.easymock.EasyMock.verify;
 
 import java.rmi.RemoteException;
 
+import org.aleksz.ltj.soap.JiraSoapService;
+import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -42,7 +44,7 @@ public class AppenderServiceImplTest {
 	}
 
 	@Test
-	public void duplicateDoesNotExist() throws org.aleksz.ltj.RemoteException, RemoteException {
+	public void duplicateDoesNotExist() throws org.aleksz.ltj.soap.RemoteException, RemoteException {
 		RemoteIssue issue = new RemoteIssue();
 		issue.setSummary(SUMMARY);
 

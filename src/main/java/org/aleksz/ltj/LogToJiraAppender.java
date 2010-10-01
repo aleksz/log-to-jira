@@ -6,6 +6,10 @@ import java.rmi.RemoteException;
 
 import javax.xml.rpc.ServiceException;
 
+import org.aleksz.ltj.soap.JiraSoapService;
+import org.aleksz.ltj.soap.JiraSoapServiceServiceLocator;
+import org.aleksz.ltj.soap.RemoteAuthenticationException;
+import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;

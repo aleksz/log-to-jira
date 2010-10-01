@@ -2,6 +2,8 @@ package org.aleksz.ltj;
 
 import java.rmi.RemoteException;
 
+import org.aleksz.ltj.soap.JiraSoapService;
+import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.log4j.spi.LoggingEvent;
 
 public class AppenderServiceImpl implements AppenderService {
