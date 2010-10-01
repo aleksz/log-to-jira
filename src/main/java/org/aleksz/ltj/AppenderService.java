@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-public interface LoggerService {
+public interface AppenderService {
 
 	RemoteIssue createIssue(LoggingEvent loggingEvent) throws RemoteException, RemoteException;
 

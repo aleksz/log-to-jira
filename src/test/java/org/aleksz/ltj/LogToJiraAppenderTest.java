@@ -21,20 +21,20 @@ public class LogToJiraAppenderTest {
 	private static final String PASS = "thePass";
 
 	private LogToJiraAppender appender;
-	private LoggerService loggerService;
+	private AppenderService appenderService;
 	private JiraSoapService jiraService;
 
 	@Before
 	public void init() {
 
-		loggerService = createMock(LoggerService.class);
+		appenderService = createMock(AppenderService.class);
 		jiraService = createMock(JiraSoapService.class);
 
 		appender = new LogToJiraAppender() {
 
 			@Override
-			protected LoggerService getService() {
-				return loggerService;
+			protected AppenderService getService() {
+				return appenderService;
 			}
 
 			@Override
@@ -54,17 +54,17 @@ public class LogToJiraAppenderTest {
 		RemoteIssue issue = new RemoteIssue();
 
 		expect(jiraService.login(USERNAME, PASS)).andReturn(TOKEN);
-		expect(loggerService.createIssue(logEvent)).andReturn(issue);
-		expect(loggerService.duplicateExists(issue, TOKEN)).andReturn(false);
+		expect(appenderService.createIssue(logEvent)).andReturn(issue);
+		expect(appenderService.duplicateExists(issue, TOKEN)).andReturn(false);
 		expect(jiraService.createIssue(TOKEN, issue)).andReturn(issue);
 		expect(jiraService.logout(TOKEN)).andReturn(true);
 		replay(jiraService);
-		replay(loggerService);
+		replay(appenderService);
 
 		appender.append(logEvent);
 
 		verify(jiraService);
-		verify(loggerService);
+		verify(appenderService);
 	}
 
 	@Test
@@ -73,16 +73,16 @@ public class LogToJiraAppenderTest {
 		RemoteIssue issue = new RemoteIssue();
 
 		expect(jiraService.login(USERNAME, PASS)).andReturn(TOKEN);
-		expect(loggerService.createIssue(logEvent)).andReturn(issue);
-		expect(loggerService.duplicateExists(issue, TOKEN)).andReturn(true);
+		expect(appenderService.createIssue(logEvent)).andReturn(issue);
+		expect(appenderService.duplicateExists(issue, TOKEN)).andReturn(true);
 		expect(jiraService.logout(TOKEN)).andReturn(true);
 		replay(jiraService);
-		replay(loggerService);
+		replay(appenderService);
 
 		appender.append(logEvent);
 
 		verify(jiraService);
-		verify(loggerService);
+		verify(appenderService);
 	}
 
 	private LoggingEvent createTestLoggingEvent() {

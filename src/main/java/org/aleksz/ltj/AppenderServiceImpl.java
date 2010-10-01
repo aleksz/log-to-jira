@@ -4,12 +4,12 @@ import java.rmi.RemoteException;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-public class LoggerServiceImpl implements LoggerService {
+public class AppenderServiceImpl implements AppenderService {
 
 	private Config config;
 	private final JiraSoapService jiraService;
 
-	public LoggerServiceImpl(Config config, JiraSoapService jiraService) {
+	public AppenderServiceImpl(Config config, JiraSoapService jiraService) {
 		this.config = config;
 		this.jiraService = jiraService;
 	}

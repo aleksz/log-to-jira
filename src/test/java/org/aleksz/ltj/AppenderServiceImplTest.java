@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class LoggerServiceImplTest {
+public class AppenderServiceImplTest {
 
 	private static final String SUMMARY = "some summary";
 	private static final String PROJECT = "TST";
@@ -28,7 +28,7 @@ public class LoggerServiceImplTest {
 		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\"" +
 		" AND status in (Open, \"In Progress\", Reopened)";
 
-	private LoggerService service;
+	private AppenderService service;
 	private Config config;
 	private JiraSoapService jiraService;
 
@@ -38,7 +38,7 @@ public class LoggerServiceImplTest {
 		config.setProject(PROJECT);
 		config.setIssueTypeId(ISSUE_TYPE);
 		jiraService = EasyMock.createMock(JiraSoapService.class);
-		service = new LoggerServiceImpl(config, jiraService);
+		service = new AppenderServiceImpl(config, jiraService);
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class LoggerServiceImplTest {
 	}
 
 	private LoggingEvent createTestLoggingEvent(Throwable exception) {
-		Logger log = Logger.getLogger(LoggerServiceImplTest.class);
+		Logger log = Logger.getLogger(AppenderServiceImplTest.class);
 		return new LoggingEvent(null, log, Level.ERROR, "tstmsg", exception);
 	}
 

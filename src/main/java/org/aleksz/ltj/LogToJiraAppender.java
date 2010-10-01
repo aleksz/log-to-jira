@@ -13,7 +13,7 @@ import org.apache.log4j.spi.LoggingEvent;
 public class LogToJiraAppender extends AppenderSkeleton {
 
 	private Config config = new Config();
-	private LoggerService service;
+	private AppenderService service;
 	private JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
 	private JiraSoapService jiraSoapService;
 
@@ -59,13 +59,13 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		return jiraSoapService;
 	}
 
-	protected LoggerService getService() {
+	protected AppenderService getService() {
 
 		if (service != null) {
 			return service;
 		}
 
-		service = new LoggerServiceImpl(config, jiraSoapService);
+		service = new AppenderServiceImpl(config, jiraSoapService);
 
 		return service;
 	}
