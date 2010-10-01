@@ -13,21 +13,17 @@ import org.apache.log4j.spi.LoggingEvent;
 public class LogToJiraAppender extends AppenderSkeleton {
 
 	private Config config = new Config();
-	private BugReport bugReport = new BugReport(config);
+	private LoggerService service;
 	private JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
 	private JiraSoapService jiraSoapService;
-
-	public LogToJiraAppender() {
-		jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
-	}
 
 	@Override
 	protected void append(LoggingEvent loggingEvent) {
 		try {
 
 			String token = jiraSoapService.login(config.getUsername(), config.getPassword());
-			RemoteIssue issue = bugReport.getIssue(loggingEvent);
-			if (!isDuplicate(issue, token)) {
+			RemoteIssue issue = getService().createIssue(loggingEvent);
+			if (!getService().duplicateExists(issue, token)) {
 				jiraSoapService.createIssue(token, issue);
 			}
 			jiraSoapService.logout(token);
@@ -37,14 +33,6 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		} catch (RemoteException e) {
 			errorHandler.error("JIRA problem", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
 		}
-	}
-
-	private boolean isDuplicate(RemoteIssue issue, String token) throws org.aleksz.ltj.RemoteException, RemoteException {
-		String JQL =
-			"project = " + config.getProject() +
-			" AND summary ~ \"\\\"" + issue.getSummary() + "\\\"\" " +
-			" AND status in (Open, \"In Progress\", Reopened)";
-		return jiraSoapService.getIssuesFromJqlSearch(token, JQL, 1).length > 0;
 	}
 
 	@Override
@@ -57,6 +45,7 @@ public class LogToJiraAppender extends AppenderSkeleton {
 	}
 
 	public void setUrl(String url) {
+		jiraSoapServiceServiceLocator = new JiraSoapServiceServiceLocator();
 		try {
 			this.jiraSoapService = jiraSoapServiceServiceLocator.getJirasoapserviceV2(new URL(url));
 		} catch (MalformedURLException e) {
@@ -64,6 +53,17 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		} catch (ServiceException e) {
 			errorHandler.error("JIRA connection problem", e, ErrorCode.GENERIC_FAILURE);
 		}
+	}
+
+	public LoggerService getService() {
+
+		if (service != null) {
+			return service;
+		}
+
+		service = new LoggerServiceImpl(config, jiraSoapService);
+
+		return service;
 	}
 
 	public void setUsername(String username) {
