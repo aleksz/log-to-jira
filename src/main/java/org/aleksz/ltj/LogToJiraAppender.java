@@ -21,12 +21,12 @@ public class LogToJiraAppender extends AppenderSkeleton {
 	protected void append(LoggingEvent loggingEvent) {
 		try {
 
-			String token = jiraSoapService.login(config.getUsername(), config.getPassword());
+			String token = getJiraService().login(config.getUsername(), config.getPassword());
 			RemoteIssue issue = getService().createIssue(loggingEvent);
 			if (!getService().duplicateExists(issue, token)) {
-				jiraSoapService.createIssue(token, issue);
+				getJiraService().createIssue(token, issue);
 			}
-			jiraSoapService.logout(token);
+			getJiraService().logout(token);
 
 		} catch (RemoteAuthenticationException e) {
 			errorHandler.error("JIRA auth failed", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
@@ -55,7 +55,11 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		}
 	}
 
-	public LoggerService getService() {
+	protected JiraSoapService getJiraService() {
+		return jiraSoapService;
+	}
+
+	protected LoggerService getService() {
 
 		if (service != null) {
 			return service;
