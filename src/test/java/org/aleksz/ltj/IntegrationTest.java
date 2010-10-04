@@ -50,13 +50,23 @@ public class IntegrationTest {
 	}
 
 	@Test
-	public void logDuplicateSummary() throws RemoteException, java.rmi.RemoteException {
-		String message = "This is error message";
+	public void logDuplicateBySummary() throws RemoteException, java.rmi.RemoteException {
+		String message = "This summary should be unique";
 		LOG.error(message);
 		LOG.error(message);
 		String JQL = "summary ~ \"\\\"" + message + "\\\"\"";
 		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 2);
 		assertEquals(1, result.length);
+	}
+
+	@Test
+	public void logDuplicateBySummaryButNotDescription() throws RemoteException, java.rmi.RemoteException {
+		String message = "There should be 2 issues with this description";
+		LOG.error(message);
+		LOG.error(message, new NullPointerException());
+		String JQL = "summary ~ \"\\\"" + message + "\\\"\"";
+		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 3);
+		assertEquals(2, result.length);
 	}
 
 	@Test

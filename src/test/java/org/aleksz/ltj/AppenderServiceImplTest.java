@@ -22,12 +22,21 @@ import org.junit.Test;
 public class AppenderServiceImplTest {
 
 	private static final String SUMMARY = "some summary";
+	private static final String DECRIPTION = "some description";
 	private static final String PROJECT = "TST";
 	private static final String ISSUE_TYPE = "1";
 	private static final String TOKEN = "tokenValue";
+
 	private static final String DUPLICATE_JQL =
 		"project = " + PROJECT +
 		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\"" +
+		" AND description IS EMPTY" +
+		" AND status in (Open, \"In Progress\", Reopened)";
+
+	private static final String DUPLICATE_WITH_DESCRIPTION_JQL =
+		"project = " + PROJECT +
+		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\"" +
+		" AND description ~ \"\\\"" + DECRIPTION + "\\\"\"" +
 		" AND status in (Open, \"In Progress\", Reopened)";
 
 	private AppenderService service;
@@ -47,8 +56,9 @@ public class AppenderServiceImplTest {
 	public void duplicateDoesNotExist() throws org.aleksz.ltj.soap.RemoteException, RemoteException {
 		RemoteIssue issue = new RemoteIssue();
 		issue.setSummary(SUMMARY);
+		issue.setDescription(DECRIPTION);
 
-		expect(jiraService.getIssuesFromJqlSearch(TOKEN, DUPLICATE_JQL, 1))
+		expect(jiraService.getIssuesFromJqlSearch(TOKEN, DUPLICATE_WITH_DESCRIPTION_JQL, 1))
 				.andReturn(new RemoteIssue[] {});
 		replay(jiraService);
 
@@ -57,7 +67,7 @@ public class AppenderServiceImplTest {
 	}
 
 	@Test
-	public void duplicateSummaryExists() throws RemoteException {
+	public void duplicateBySummaryExists() throws RemoteException {
 		RemoteIssue issue = new RemoteIssue();
 		issue.setSummary(SUMMARY);
 
