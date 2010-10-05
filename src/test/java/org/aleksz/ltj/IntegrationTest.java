@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertEquals;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.naming.NoPermissionException;
 import javax.xml.rpc.ServiceException;
 
 import org.aleksz.ltj.soap.JiraSoapService;
@@ -63,11 +64,12 @@ public class IntegrationTest {
 	@Test
 	public void logDuplicateBySummaryButNotDescription() throws RemoteException, java.rmi.RemoteException {
 		String message = "There should be 2 issues with this description";
+		Throwable uniqueException = getUniqueException();
 		LOG.error(message);
-		LOG.error(message, new NullPointerException());
-		String JQL = "summary ~ \"\\\"" + message + "\\\"\"";
-		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 3);
-		assertEquals(2, result.length);
+		LOG.error(message, uniqueException);
+		String JQL = "description ~ \"\\\"" + uniqueException.getMessage() + "\\\"\"";
+		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 2);
+		assertEquals(1, result.length);
 	}
 
 	@Test
@@ -97,5 +99,9 @@ public class IntegrationTest {
 		} catch (RuntimeException e) {
 			LOG.error("Log message", e);
 		}
+	}
+
+	private Throwable getUniqueException() {
+		return new NoPermissionException(String.valueOf(System.currentTimeMillis()));
 	}
 }
