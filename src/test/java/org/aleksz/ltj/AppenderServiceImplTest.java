@@ -11,7 +11,6 @@ import java.rmi.RemoteException;
 
 import org.aleksz.ltj.soap.JiraSoapService;
 import org.aleksz.ltj.soap.RemoteIssue;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -44,8 +43,8 @@ public class AppenderServiceImplTest {
 
 	private static final String DUPLICATE_WITH_DESCRIPTION_TRICKY_JQL =
 		"project = " + PROJECT +
-		" AND summary ~ \"\\\"" + StringEscapeUtils.escapeJava(TRICKY_SUMMARY) + "\\\"\"" +
-		" AND description ~ \"\\\"" + StringEscapeUtils.escapeJava(TRICKY_DECRIPTION) + "\\\"\"" +
+		" AND summary ~ \"\\\"?!~\\t\\n,.*/-@#$%^&()_+\\u0444\\u0432\\u043C\\u00C4\\u00DC\\u00D5\\\"\"" +
+		" AND description ~ \"\\\"@#$%^&()_+\\u0444\\u0432\\u043C\\u00C4\\u00DC\\u00D5?!~\\t\\n,.*/-\\\"\"" +
 		" AND status in (Open, \"In Progress\", Reopened)";
 
 	private AppenderService service;
