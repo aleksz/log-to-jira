@@ -1,11 +1,11 @@
 package org.aleksz.ltj;
 
 import static junit.framework.Assert.assertEquals;
+import static org.apache.commons.lang.StringEscapeUtils.escapeJava;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.naming.NoPermissionException;
 import javax.xml.rpc.ServiceException;
 
 import org.aleksz.ltj.soap.JiraSoapService;
@@ -13,7 +13,6 @@ import org.aleksz.ltj.soap.JiraSoapServiceServiceLocator;
 import org.aleksz.ltj.soap.RemoteAuthenticationException;
 import org.aleksz.ltj.soap.RemoteException;
 import org.aleksz.ltj.soap.RemoteIssue;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -46,9 +45,7 @@ public class IntegrationTest {
 	public void logUniqueSummary() throws RemoteException, java.rmi.RemoteException {
 		String message = "Tech error nr " + System.currentTimeMillis();
 		LOG.error(message);
-		String JQL = "summary ~ \"\\\"" + message + "\\\"\"";
-		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 2);
-		assertEquals(1, result.length);
+		assertIssueNumber(message, 1);
 	}
 
 	@Test
@@ -56,36 +53,22 @@ public class IntegrationTest {
 		String message = "This summary should be unique";
 		LOG.error(message);
 		LOG.error(message);
-		String JQL = "summary ~ \"\\\"" + message + "\\\"\"";
-		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 2);
-		assertEquals(1, result.length);
+		assertIssueNumber(message, 1);
 	}
 
 	@Test
 	public void logDuplicateBySummaryButNotDescription() throws RemoteException, java.rmi.RemoteException {
-		String message = "There should be 2 issues with this description";
-		Throwable uniqueException = getUniqueException();
+		String message = "There are 2 issues with this summary " + System.currentTimeMillis();
 		LOG.error(message);
-		LOG.error(message, uniqueException);
-		String JQL = "description ~ \"\\\"" + uniqueException.getMessage() + "\\\"\"";
-		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 2);
-		assertEquals(1, result.length);
+		LOG.error(message,  new NullPointerException());
+		assertIssueNumber(message, 2);
 	}
 
 	@Test
 	public void handlesSpecialCharsInSummary() throws RemoteException, java.rmi.RemoteException {
-
-		String message = "\t!@#$$%^%&*&()_фваыпжäüü";
-
-		try {
-			throw new NullPointerException("Exception message");
-		} catch (NullPointerException npe) {
-			LOG.error(message, npe);
-		}
-
-		String JQL = "summary ~ \"\\\"" + StringEscapeUtils.escapeJava(message) + "\\\"\"";
-		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 1);
-		assertEquals(1, result.length);
+		String message = "\t!@#$$%^%&*&()_фваыпжäüü" + System.currentTimeMillis();
+		LOG.error(message, new NullPointerException());
+		assertIssueNumber(message, 1);
 	}
 
 	@Test
@@ -101,7 +84,9 @@ public class IntegrationTest {
 		}
 	}
 
-	private Throwable getUniqueException() {
-		return new NoPermissionException(String.valueOf(System.currentTimeMillis()));
+	private void assertIssueNumber(String summary, int num) throws RemoteException, java.rmi.RemoteException {
+		String JQL = "summary ~ \"\\\"" + escapeJava(summary) + "\\\"\"";
+		RemoteIssue[] res = jiraSoapService.getIssuesFromJqlSearch(token, JQL, num + 1);
+		assertEquals(num, res.length);
 	}
 }
