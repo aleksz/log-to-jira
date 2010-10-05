@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 
 import org.aleksz.ltj.soap.JiraSoapService;
 import org.aleksz.ltj.soap.RemoteIssue;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -21,8 +22,10 @@ import org.junit.Test;
 
 public class AppenderServiceImplTest {
 
-	private static final String SUMMARY = "some summary";
-	private static final String DECRIPTION = "some description";
+	private static final String SUMMARY = "the summary";
+	private static final String DECRIPTION = "the description";
+	private static final String TRICKY_SUMMARY = "?!~\t\n,.*/-@#$%^&()_+фвмÄÜÕ";
+	private static final String TRICKY_DECRIPTION = "@#$%^&()_+фвмÄÜÕ?!~\t\n,.*/-";
 	private static final String PROJECT = "TST";
 	private static final String ISSUE_TYPE = "1";
 	private static final String TOKEN = "tokenValue";
@@ -37,6 +40,12 @@ public class AppenderServiceImplTest {
 		"project = " + PROJECT +
 		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\"" +
 		" AND description ~ \"\\\"" + DECRIPTION + "\\\"\"" +
+		" AND status in (Open, \"In Progress\", Reopened)";
+
+	private static final String DUPLICATE_WITH_DESCRIPTION_TRICKY_JQL =
+		"project = " + PROJECT +
+		" AND summary ~ \"\\\"" + StringEscapeUtils.escapeJava(TRICKY_SUMMARY) + "\\\"\"" +
+		" AND description ~ \"\\\"" + StringEscapeUtils.escapeJava(TRICKY_DECRIPTION) + "\\\"\"" +
 		" AND status in (Open, \"In Progress\", Reopened)";
 
 	private AppenderService service;
@@ -76,6 +85,20 @@ public class AppenderServiceImplTest {
 		replay(jiraService);
 
 		assertTrue(service.duplicateExists(issue, TOKEN));
+		verify(jiraService);
+	}
+
+	@Test
+	public void duplicateDetectionHandlesSpecialChars() throws org.aleksz.ltj.soap.RemoteException, RemoteException {
+		RemoteIssue issue = new RemoteIssue();
+		issue.setSummary(TRICKY_SUMMARY);
+		issue.setDescription(TRICKY_DECRIPTION);
+
+		expect(jiraService.getIssuesFromJqlSearch(TOKEN, DUPLICATE_WITH_DESCRIPTION_TRICKY_JQL, 1))
+				.andReturn(new RemoteIssue[] {});
+		replay(jiraService);
+
+		service.duplicateExists(issue, TOKEN);
 		verify(jiraService);
 	}
 

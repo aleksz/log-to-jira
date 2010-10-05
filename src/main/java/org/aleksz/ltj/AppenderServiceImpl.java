@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import org.aleksz.ltj.soap.JiraSoapService;
 import org.aleksz.ltj.soap.RemoteIssue;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -47,13 +48,13 @@ public class AppenderServiceImpl implements AppenderService {
 		JQL.append("project = ");
 		JQL.append(config.getProject());
 		JQL.append(" AND summary ~ \"\\\"");
-		JQL.append(issue.getSummary());
+		JQL.append(StringEscapeUtils.escapeJava(issue.getSummary()));
 		JQL.append("\\\"\" AND description ");
 		if (StringUtils.isBlank(issue.getDescription())) {
 			JQL.append("IS EMPTY");
 		} else {
 			JQL.append("~ \"\\\"");
-			JQL.append(issue.getDescription());
+			JQL.append(StringEscapeUtils.escapeJava(issue.getDescription()));
 			JQL.append("\\\"\"");
 		}
 		JQL.append(" AND status in (Open, \"In Progress\", Reopened)");

@@ -12,6 +12,7 @@ import org.aleksz.ltj.soap.JiraSoapServiceServiceLocator;
 import org.aleksz.ltj.soap.RemoteAuthenticationException;
 import org.aleksz.ltj.soap.RemoteException;
 import org.aleksz.ltj.soap.RemoteIssue;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -70,12 +71,19 @@ public class IntegrationTest {
 	}
 
 	@Test
-	public void logException() {
+	public void handlesSpecialCharsInSummary() throws RemoteException, java.rmi.RemoteException {
+
+		String message = "\t!@#$$%^%&*&()_фваыпжäüü";
+
 		try {
 			throw new NullPointerException("Exception message");
 		} catch (NullPointerException npe) {
-			LOG.error("Log message", npe);
+			LOG.error(message, npe);
 		}
+
+		String JQL = "summary ~ \"\\\"" + StringEscapeUtils.escapeJava(message) + "\\\"\"";
+		RemoteIssue[] result = jiraSoapService.getIssuesFromJqlSearch(token, JQL, 1);
+		assertEquals(1, result.length);
 	}
 
 	@Test
