@@ -1,0 +1,20 @@
+This appender uses Jira SOAP connector to create issues in Jira.
+
+Appender parameters:
+
+* url - Jira SOAP service url
+* username - Jira username
+* password - Jira password
+* project - target project in Jira
+* issueTypeId - type id of issues to create in Jira
+
+Duplicate issues are not created. Appender considers issue to be duplicate in
+case if it has the same summary and description.
+
+<appender name="jira" class="org.aleksz.ltj.LogToJiraAppender">
+	<param name="url" value="http://localhost:2990/jira/rpc/soap/jirasoapservice-v2"/>
+	<param name="username" value="admin"/>
+	<param name="password" value="admin"/>
+	<param name="project" value="TST"/>
+	<param name="issueTypeId" value="1"/>
+</appender>
