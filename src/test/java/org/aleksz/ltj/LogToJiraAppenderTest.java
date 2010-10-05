@@ -52,6 +52,14 @@ public class LogToJiraAppenderTest {
 	}
 
 	@Test
+	public void abortIfNotEnabled() {
+		appender.setEnabled(false);
+		replay(jiraService, appenderService);
+		appender.append(null);
+		verify(jiraService, appenderService);
+	}
+
+	@Test
 	public void append() throws RemoteAuthenticationException, RemoteException, RemoteException {
 		LoggingEvent logEvent = createTestLoggingEvent();
 		RemoteIssue issue = new RemoteIssue();

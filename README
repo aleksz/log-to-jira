@@ -7,6 +7,7 @@ Appender parameters:
 * password - Jira password
 * project - target project in Jira
 * issueTypeId - type id of issues to create in Jira
+* enabled - allows disabling appender, for example using system property
 
 Duplicate issues are not created. Appender considers issue to be duplicate in
 case if it has the same summary and description.
@@ -17,4 +18,5 @@ case if it has the same summary and description.
 	<param name="password" value="admin"/>
 	<param name="project" value="TST"/>
 	<param name="issueTypeId" value="1"/>
+	<param name="enabled" value="true"/>
 </appender>

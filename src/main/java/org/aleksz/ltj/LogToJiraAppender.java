@@ -20,9 +20,15 @@ public class LogToJiraAppender extends AppenderSkeleton {
 	private AppenderService service;
 	private JiraSoapServiceServiceLocator jiraSoapServiceServiceLocator;
 	private JiraSoapService jiraSoapService;
+	private boolean enabled = true;
 
 	@Override
 	protected void append(LoggingEvent loggingEvent) {
+
+		if (!enabled) {
+			return;
+		}
+
 		try {
 
 			String token = getJiraService().login(config.getUsername(), config.getPassword());
@@ -88,5 +94,9 @@ public class LogToJiraAppender extends AppenderSkeleton {
 
 	public void setIssueTypeId(String issueTypeId) {
 		config.setIssueTypeId(issueTypeId);
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }
