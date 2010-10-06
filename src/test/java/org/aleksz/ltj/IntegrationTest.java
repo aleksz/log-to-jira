@@ -72,21 +72,40 @@ public class IntegrationTest {
 	}
 
 	@Test
-	public void nestedExceptions() {
+	public void nestedExceptions() throws RemoteException, java.rmi.RemoteException {
+
+		String innerMessage = "First catch message";
+		String message = "Log message" + System.currentTimeMillis();
+
 		try {
 			try {
 				throw new NullPointerException("Exception message");
 			} catch (NullPointerException npe) {
-				throw new RuntimeException("First catch message", npe);
+				throw new RuntimeException(innerMessage, npe);
 			}
 		} catch (RuntimeException e) {
-			LOG.error("Log message", e);
+			LOG.error(message, e);
 		}
+
+		assertIssueNumber(message, innerMessage, 1);
+	}
+
+	private void assertIssueNumber(String summary, String description, int num)
+			throws RemoteException, java.rmi.RemoteException {
+
+		String JQL = "summary ~ \"\\\"" + escapeJava(summary);
+
+		if (description != null) {
+			JQL += "\\\"\" AND description ~ \"\\\"" + escapeJava(description);
+		}
+
+		JQL += "\\\"\"";
+
+		RemoteIssue[] res = jiraSoapService.getIssuesFromJqlSearch(token, JQL, num + 1);
+		assertEquals(num, res.length);
 	}
 
 	private void assertIssueNumber(String summary, int num) throws RemoteException, java.rmi.RemoteException {
-		String JQL = "summary ~ \"\\\"" + escapeJava(summary) + "\\\"\"";
-		RemoteIssue[] res = jiraSoapService.getIssuesFromJqlSearch(token, JQL, num + 1);
-		assertEquals(num, res.length);
+		assertIssueNumber(summary, null, num);
 	}
 }
