@@ -1,6 +1,7 @@
 package org.aleksz.ltj;
 
 import java.rmi.RemoteException;
+import java.util.Map.Entry;
 
 import org.aleksz.ltj.soap.JiraSoapService;
 import org.aleksz.ltj.soap.RemoteIssue;
@@ -26,6 +27,7 @@ public class AppenderServiceImpl implements AppenderService {
 		result.setType(config.getIssueTypeId());
 		result.setSummary(loggingEvent.getRenderedMessage());
 		result.setDescription(composeDescription(loggingEvent));
+		result.setEnvironment(composeEnvironmentDescription());
 
 		return result;
 	}
@@ -36,6 +38,29 @@ public class AppenderServiceImpl implements AppenderService {
 
 		if (loggingEvent.getThrowableInformation() != null) {
 			result.append(Util.toString(loggingEvent.getThrowableInformation().getThrowable()));
+		}
+
+		return result.toString();
+	}
+
+	private String composeEnvironmentDescription() {
+
+		StringBuilder result = new StringBuilder();
+
+		for (Entry<String, String> e : System.getenv().entrySet()) {
+			result.append(e.getKey());
+			result.append("=");
+			result.append(e.getValue());
+			result.append("; ");
+		}
+
+		result.append("\n\n");
+
+		for (Entry<Object, Object> e : System.getProperties().entrySet()) {
+			result.append(e.getKey());
+			result.append("=");
+			result.append(e.getValue());
+			result.append("; ");
 		}
 
 		return result.toString();
