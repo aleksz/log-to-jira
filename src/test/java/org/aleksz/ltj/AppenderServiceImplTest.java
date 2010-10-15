@@ -60,6 +60,18 @@ public class AppenderServiceImplTest {
 		service = new AppenderServiceImpl(config, jiraService);
 	}
 
+	/**
+	 * Not implemented
+	 */
+	@Test
+	public void descriptionContainsMDC() throws RemoteException {
+		LoggingEvent loggingEvent = createTestLoggingEvent();
+		String mdcPropertyName = "MDCname";
+		loggingEvent.setProperty(mdcPropertyName, "MDCvalue");
+		RemoteIssue issue = service.createIssue(loggingEvent);
+		assertTrue("No MDC in description", issue.getDescription().contains(mdcPropertyName));
+	}
+
 	@Test
 	public void duplicateDoesNotExist() throws org.aleksz.ltj.soap.RemoteException, RemoteException {
 		RemoteIssue issue = new RemoteIssue();

@@ -36,6 +36,11 @@ public class AppenderServiceImpl implements AppenderService {
 
 		StringBuilder result = new StringBuilder();
 
+		if (!loggingEvent.getProperties().isEmpty()) {
+			result.append(loggingEvent.getProperties());
+			result.append("\n");
+		}
+
 		if (loggingEvent.getThrowableInformation() != null) {
 			result.append(Util.toString(loggingEvent.getThrowableInformation().getThrowable()));
 		}

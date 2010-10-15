@@ -42,6 +42,13 @@ public class IntegrationTest {
 	}
 
 	@Test
+	public void differentTestCasesForSameBug() throws RemoteException, java.rmi.RemoteException {
+		LOG.error("Duplicate entry 213");
+		LOG.error("Duplicate entry 312");
+		assertIssueNumber("Duplicate entry", 1);
+	}
+
+	@Test
 	public void logUniqueSummary() throws RemoteException, java.rmi.RemoteException {
 		String message = "Tech error nr " + System.currentTimeMillis();
 		LOG.error(message);
