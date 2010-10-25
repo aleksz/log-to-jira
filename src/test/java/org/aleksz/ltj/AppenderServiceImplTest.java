@@ -33,19 +33,22 @@ public class AppenderServiceImplTest {
 		"project = " + PROJECT +
 		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\"" +
 		" AND description IS EMPTY" +
-		" AND status in (Open, \"In Progress\", Reopened)";
+		" AND status in (Open, \"In Progress\", Reopened)" +
+		" ORDER BY created";
 
 	private static final String DUPLICATE_WITH_DESCRIPTION_JQL =
 		"project = " + PROJECT +
 		" AND summary ~ \"\\\"" + SUMMARY + "\\\"\"" +
 		" AND description ~ \"\\\"" + DECRIPTION + "\\\"\"" +
-		" AND status in (Open, \"In Progress\", Reopened)";
+		" AND status in (Open, \"In Progress\", Reopened)" +
+		" ORDER BY created";
 
 	private static final String DUPLICATE_WITH_DESCRIPTION_TRICKY_JQL =
 		"project = " + PROJECT +
 		" AND summary ~ \"\\\"?!~\\t\\n,.*/-@#$%^&()_+\\u0444\\u0432\\u043C\\u00C4\\u00DC\\u00D5\\\"\"" +
 		" AND description ~ \"\\\"@#$%^&()_+\\u0444\\u0432\\u043C\\u00C4\\u00DC\\u00D5?!~\\t\\n,.*/-\\\"\"" +
-		" AND status in (Open, \"In Progress\", Reopened)";
+		" AND status in (Open, \"In Progress\", Reopened)" +
+		" ORDER BY created";
 
 	private AppenderService service;
 	private Config config;
@@ -58,18 +61,6 @@ public class AppenderServiceImplTest {
 		config.setIssueTypeId(ISSUE_TYPE);
 		jiraService = EasyMock.createMock(JiraSoapService.class);
 		service = new AppenderServiceImpl(config, jiraService);
-	}
-
-	/**
-	 * Not implemented
-	 */
-	@Test
-	public void descriptionContainsMDC() throws RemoteException {
-		LoggingEvent loggingEvent = createTestLoggingEvent();
-		String mdcPropertyName = "MDCname";
-		loggingEvent.setProperty(mdcPropertyName, "MDCvalue");
-		RemoteIssue issue = service.createIssue(loggingEvent);
-		assertTrue("No MDC in description", issue.getDescription().contains(mdcPropertyName));
 	}
 
 	@Test

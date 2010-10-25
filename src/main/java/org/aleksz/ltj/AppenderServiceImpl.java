@@ -3,7 +3,9 @@ package org.aleksz.ltj;
 import java.rmi.RemoteException;
 import java.util.Map.Entry;
 
+import org.aleksz.ltj.plugin.Plugin;
 import org.aleksz.ltj.soap.JiraSoapService;
+import org.aleksz.ltj.soap.RemoteComment;
 import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -36,11 +38,6 @@ public class AppenderServiceImpl implements AppenderService {
 
 		StringBuilder result = new StringBuilder();
 
-		if (!loggingEvent.getProperties().isEmpty()) {
-			result.append(loggingEvent.getProperties());
-			result.append("\n");
-		}
-
 		if (loggingEvent.getThrowableInformation() != null) {
 			result.append(Util.toString(loggingEvent.getThrowableInformation().getThrowable()));
 		}
@@ -71,8 +68,10 @@ public class AppenderServiceImpl implements AppenderService {
 		return result.toString();
 	}
 
+
 	@Override
-	public boolean duplicateExists(RemoteIssue issue, String token) throws RemoteException, RemoteException {
+	public RemoteIssue getLatestDuplicate(RemoteIssue issue, String token) throws RemoteException,
+			RemoteException {
 
 		StringBuilder JQL = new StringBuilder();
 		JQL.append("project = ");
@@ -88,7 +87,35 @@ public class AppenderServiceImpl implements AppenderService {
 			JQL.append("\\\"\"");
 		}
 		JQL.append(" AND status in (Open, \"In Progress\", Reopened)");
+		JQL.append(" ORDER BY created");
 
-		return jiraService.getIssuesFromJqlSearch(token, JQL.toString(), 1).length > 0;
+		RemoteIssue[] duplicates = jiraService.getIssuesFromJqlSearch(token, JQL.toString(), 1);
+		return duplicates.length > 0 ? duplicates[0] : null;
 	}
+
+	@Override
+	public boolean duplicateExists(RemoteIssue issue, String token) throws RemoteException, RemoteException {
+		return getLatestDuplicate(issue, token) != null;
+	}
+
+	@Override
+	public RemoteComment createComment(Plugin plugin, LoggingEvent loggingEvent) {
+		RemoteComment comment = new RemoteComment();
+		comment.setBody(plugin.getText(loggingEvent));
+		return comment;
+	}
+
+	@Override
+	public boolean duplicateExists(RemoteComment comment, RemoteIssue issue,
+			String token) throws RemoteException, RemoteException {
+
+		for (RemoteComment c : jiraService.getComments(token, issue.getKey())) {
+			if (c.getBody().equalsIgnoreCase(comment.getBody())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }
