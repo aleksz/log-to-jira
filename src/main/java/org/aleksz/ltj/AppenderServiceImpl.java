@@ -1,5 +1,7 @@
 package org.aleksz.ltj;
 
+import static org.apache.commons.lang.StringEscapeUtils.escapeJava;
+
 import java.rmi.RemoteException;
 import java.util.Map.Entry;
 
@@ -7,7 +9,6 @@ import org.aleksz.ltj.plugin.Plugin;
 import org.aleksz.ltj.soap.JiraSoapService;
 import org.aleksz.ltj.soap.RemoteComment;
 import org.aleksz.ltj.soap.RemoteIssue;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -77,13 +78,13 @@ public class AppenderServiceImpl implements AppenderService {
 		JQL.append("project = ");
 		JQL.append(config.getProject());
 		JQL.append(" AND summary ~ \"\\\"");
-		JQL.append(StringEscapeUtils.escapeJava(issue.getSummary()));
+		JQL.append(escapeJava(issue.getSummary()));
 		JQL.append("\\\"\" AND description ");
 		if (StringUtils.isBlank(issue.getDescription())) {
 			JQL.append("IS EMPTY");
 		} else {
 			JQL.append("~ \"\\\"");
-			JQL.append(StringEscapeUtils.escapeJava(issue.getDescription()));
+			JQL.append(escapeJava(issue.getDescription()));
 			JQL.append("\\\"\"");
 		}
 		JQL.append(" AND status in (Open, \"In Progress\", Reopened)");
@@ -109,13 +110,14 @@ public class AppenderServiceImpl implements AppenderService {
 	public boolean duplicateExists(RemoteComment comment, RemoteIssue issue,
 			String token) throws RemoteException, RemoteException {
 
-		for (RemoteComment c : jiraService.getComments(token, issue.getKey())) {
-			if (c.getBody().equalsIgnoreCase(comment.getBody())) {
-				return true;
-			}
-		}
+		StringBuilder JQL = new StringBuilder();
+		JQL.append("key = ");
+		JQL.append(issue.getKey());
+		JQL.append(" AND comment ~ \"\\\"");
+		JQL.append(escapeJava(comment.getBody()));
+		JQL.append("\\\"\"");
 
-		return false;
+		return jiraService.getIssuesFromJqlSearch(token, JQL.toString(), 1).length > 0;
 	}
 
 }
