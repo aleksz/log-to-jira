@@ -14,7 +14,10 @@
 		<param name="password" value="admin"/>
 		<param name="project" value="TST"/>
 		<param name="issueTypeId" value="1"/>
-		<param name="plugins" value="org.aleksz.ltj.plugin.MDCPlugin,org.aleksz.ltj.plugin.SystemPropertiesPlugin,org.aleksz.ltj.plugin.TimestampPlugin"/>
+		<param name="plugins" value=
+			"org.aleksz.ltj.plugin.MDCPlugin,
+			org.aleksz.ltj.plugin.SystemPropertiesPlugin,
+			org.aleksz.ltj.plugin.TimestampPlugin"/>
 	</appender>
 
 	<root>

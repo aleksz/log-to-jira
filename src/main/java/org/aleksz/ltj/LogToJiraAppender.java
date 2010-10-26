@@ -15,6 +15,7 @@ import org.aleksz.ltj.soap.RemoteAuthenticationException;
 import org.aleksz.ltj.soap.RemoteComment;
 import org.aleksz.ltj.soap.RemoteIssue;
 import org.aleksz.ltj.soap.RemotePermissionException;
+import org.aleksz.ltj.soap.RemoteValidationException;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
@@ -36,26 +37,31 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		}
 
 		try {
-
-			String token = getJiraService().login(config.getUsername(), config.getPassword());
-
-			RemoteIssue newIssue = getService().createIssue(loggingEvent);
-			RemoteIssue duplicate = getService().getLatestDuplicate(newIssue, token);
-
-			if (duplicate == null) {
-				newIssue = getJiraService().createIssue(token, newIssue);
-				applyPlugins(newIssue, loggingEvent, token);
-			} else {
-				applyPlugins(duplicate, loggingEvent, token);
-			}
-
-			getJiraService().logout(token);
-
+			logToJira(loggingEvent);
 		} catch (RemoteAuthenticationException e) {
 			errorHandler.error("JIRA auth failed", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
 		} catch (RemoteException e) {
 			errorHandler.error("JIRA problem", e, ErrorCode.GENERIC_FAILURE, loggingEvent);
 		}
+	}
+
+	private void logToJira(LoggingEvent loggingEvent) throws RemoteException,
+			RemoteAuthenticationException, org.aleksz.ltj.soap.RemoteException,
+			RemoteValidationException, RemotePermissionException {
+
+		String token = getJiraService().login(config.getUsername(), config.getPassword());
+
+		RemoteIssue newIssue = getService().createIssue(loggingEvent);
+		RemoteIssue duplicate = getService().getLatestDuplicate(newIssue, token);
+
+		if (duplicate == null) {
+			newIssue = getJiraService().createIssue(token, newIssue);
+			applyPlugins(newIssue, loggingEvent, token);
+		} else {
+			applyPlugins(duplicate, loggingEvent, token);
+		}
+
+		getJiraService().logout(token);
 	}
 
 	private void applyPlugins(RemoteIssue issue, LoggingEvent event, String token)
@@ -131,7 +137,7 @@ public class LogToJiraAppender extends AppenderSkeleton {
 
 	public void setPlugins(String commaSeparatedPlugins) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		for (String plugin : commaSeparatedPlugins.split(",")) {
-			plugins.add((Plugin) Class.forName(plugin).newInstance());
+			plugins.add((Plugin) Class.forName(plugin.trim()).newInstance());
 		}
 	}
 }
