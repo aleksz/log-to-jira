@@ -135,7 +135,9 @@ public class LogToJiraAppender extends AppenderSkeleton {
 		this.plugins = plugins;
 	}
 
-	public void setPlugins(String commaSeparatedPlugins) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public void setPlugins(String commaSeparatedPlugins)
+			throws InstantiationException, IllegalAccessException,
+				ClassNotFoundException {
 		for (String plugin : commaSeparatedPlugins.split(",")) {
 			plugins.add((Plugin) Class.forName(plugin.trim()).newInstance());
 		}
