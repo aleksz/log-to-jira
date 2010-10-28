@@ -17,7 +17,8 @@
 		<param name="plugins" value=
 			"org.aleksz.ltj.plugin.MDCPlugin,
 			org.aleksz.ltj.plugin.SystemPropertiesPlugin,
-			org.aleksz.ltj.plugin.TimestampPlugin"/>
+			org.aleksz.ltj.plugin.TimestampPlugin,
+			org.aleksz.ltj.plugin.RuntimePlugin"/>
 	</appender>
 
 	<root>
