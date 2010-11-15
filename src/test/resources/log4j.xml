@@ -8,17 +8,17 @@
 		</layout>
 	</appender>
 
-	<appender name="jira" class="org.aleksz.ltj.LogToJiraAppender">
+	<appender name="jira" class="ee.ignite.logtojira.LogToJiraAppender">
 		<param name="url" value="http://localhost:2990/jira/rpc/soap/jirasoapservice-v2"/>
 		<param name="username" value="admin"/>
 		<param name="password" value="admin"/>
 		<param name="project" value="TST"/>
 		<param name="issueTypeId" value="1"/>
 		<param name="plugins" value=
-			"org.aleksz.ltj.plugin.MDCPlugin,
-			org.aleksz.ltj.plugin.SystemPropertiesPlugin,
-			org.aleksz.ltj.plugin.TimestampPlugin,
-			org.aleksz.ltj.plugin.RuntimePlugin"/>
+			"ee.ignite.logtojira.plugin.MDCPlugin,
+			ee.ignite.logtojira.plugin.SystemPropertiesPlugin,
+			ee.ignite.logtojira.plugin.TimestampPlugin,
+			ee.ignite.logtojira.plugin.RuntimePlugin"/>
 	</appender>
 
 	<root>

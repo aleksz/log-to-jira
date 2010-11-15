@@ -1,4 +1,4 @@
-package org.aleksz.ltj.plugin;
+package ee.ignite.logtojira.plugin;
 
 import java.util.Date;
 

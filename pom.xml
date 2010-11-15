@@ -73,7 +73,7 @@
 					<wsdlFiles>
 						<wsdlFile>jirasoapservice-v2.wsdl</wsdlFile>
 					</wsdlFiles>
-					<packageSpace>org.aleksz.ltj.soap</packageSpace>
+					<packageSpace>ee.ignite.logtojira.soap</packageSpace>
 					<debug>false</debug>
 				</configuration>
 				<executions>

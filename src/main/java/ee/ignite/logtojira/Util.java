@@ -1,4 +1,4 @@
-package org.aleksz.ltj;
+package ee.ignite.logtojira;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -1,16 +1,17 @@
-package org.aleksz.ltj;
+package ee.ignite.logtojira;
 
 import static org.apache.commons.lang.StringEscapeUtils.escapeJava;
 
 import java.rmi.RemoteException;
 import java.util.Map.Entry;
 
-import org.aleksz.ltj.plugin.Plugin;
-import org.aleksz.ltj.soap.JiraSoapService;
-import org.aleksz.ltj.soap.RemoteComment;
-import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.spi.LoggingEvent;
+
+import ee.ignite.logtojira.plugin.Plugin;
+import ee.ignite.logtojira.soap.JiraSoapService;
+import ee.ignite.logtojira.soap.RemoteComment;
+import ee.ignite.logtojira.soap.RemoteIssue;
 
 public class AppenderServiceImpl implements AppenderService {
 

@@ -1,4 +1,4 @@
-package org.aleksz.ltj.plugin;
+package ee.ignite.logtojira.plugin;
 
 import org.apache.log4j.spi.LoggingEvent;
 

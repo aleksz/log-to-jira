@@ -1,11 +1,12 @@
-package org.aleksz.ltj;
+package ee.ignite.logtojira;
 
 import java.rmi.RemoteException;
 
-import org.aleksz.ltj.plugin.Plugin;
-import org.aleksz.ltj.soap.RemoteComment;
-import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.log4j.spi.LoggingEvent;
+
+import ee.ignite.logtojira.plugin.Plugin;
+import ee.ignite.logtojira.soap.RemoteComment;
+import ee.ignite.logtojira.soap.RemoteIssue;
 
 public interface AppenderService {
 

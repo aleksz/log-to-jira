@@ -1,4 +1,4 @@
-package org.aleksz.ltj;
+package ee.ignite.logtojira;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,17 +8,18 @@ import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 
-import org.aleksz.ltj.plugin.Plugin;
-import org.aleksz.ltj.soap.JiraSoapService;
-import org.aleksz.ltj.soap.JiraSoapServiceServiceLocator;
-import org.aleksz.ltj.soap.RemoteAuthenticationException;
-import org.aleksz.ltj.soap.RemoteComment;
-import org.aleksz.ltj.soap.RemoteIssue;
-import org.aleksz.ltj.soap.RemotePermissionException;
-import org.aleksz.ltj.soap.RemoteValidationException;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
+
+import ee.ignite.logtojira.plugin.Plugin;
+import ee.ignite.logtojira.soap.JiraSoapService;
+import ee.ignite.logtojira.soap.JiraSoapServiceServiceLocator;
+import ee.ignite.logtojira.soap.RemoteAuthenticationException;
+import ee.ignite.logtojira.soap.RemoteComment;
+import ee.ignite.logtojira.soap.RemoteIssue;
+import ee.ignite.logtojira.soap.RemotePermissionException;
+import ee.ignite.logtojira.soap.RemoteValidationException;
 
 public class LogToJiraAppender extends AppenderSkeleton {
 
@@ -46,7 +47,7 @@ public class LogToJiraAppender extends AppenderSkeleton {
 	}
 
 	private void logToJira(LoggingEvent loggingEvent) throws RemoteException,
-			RemoteAuthenticationException, org.aleksz.ltj.soap.RemoteException,
+			RemoteAuthenticationException, ee.ignite.logtojira.soap.RemoteException,
 			RemoteValidationException, RemotePermissionException {
 
 		String token = getJiraService().login(config.getUsername(), config.getPassword());
@@ -66,7 +67,7 @@ public class LogToJiraAppender extends AppenderSkeleton {
 
 	private void applyPlugins(RemoteIssue issue, LoggingEvent event, String token)
 			throws RemotePermissionException, RemoteAuthenticationException,
-				org.aleksz.ltj.soap.RemoteException, RemoteException {
+				ee.ignite.logtojira.soap.RemoteException, RemoteException {
 
 		for (Plugin plugin : plugins) {
 			RemoteComment comment = getService().createComment(plugin, event);

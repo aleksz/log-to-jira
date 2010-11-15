@@ -1,4 +1,4 @@
-package org.aleksz.ltj;
+package ee.ignite.logtojira;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -8,16 +8,19 @@ import static org.easymock.EasyMock.verify;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-import org.aleksz.ltj.plugin.Plugin;
-import org.aleksz.ltj.soap.JiraSoapService;
-import org.aleksz.ltj.soap.RemoteAuthenticationException;
-import org.aleksz.ltj.soap.RemoteComment;
-import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.junit.Before;
 import org.junit.Test;
+
+import ee.ignite.logtojira.AppenderService;
+import ee.ignite.logtojira.LogToJiraAppender;
+import ee.ignite.logtojira.plugin.Plugin;
+import ee.ignite.logtojira.soap.JiraSoapService;
+import ee.ignite.logtojira.soap.RemoteAuthenticationException;
+import ee.ignite.logtojira.soap.RemoteComment;
+import ee.ignite.logtojira.soap.RemoteIssue;
 
 
 public class LogToJiraAppenderTest {
@@ -104,7 +107,7 @@ public class LogToJiraAppenderTest {
 	}
 
 	@Test
-	public void appendDuplicate() throws RemoteAuthenticationException, org.aleksz.ltj.soap.RemoteException, RemoteException {
+	public void appendDuplicate() throws RemoteAuthenticationException, ee.ignite.logtojira.soap.RemoteException, RemoteException {
 		LoggingEvent logEvent = createTestLoggingEvent();
 		RemoteIssue issue = new RemoteIssue();
 		RemoteIssue duplicate = new RemoteIssue();

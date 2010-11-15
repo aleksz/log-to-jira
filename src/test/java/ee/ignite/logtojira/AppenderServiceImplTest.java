@@ -1,4 +1,4 @@
-package org.aleksz.ltj;
+package ee.ignite.logtojira;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -9,14 +9,19 @@ import static org.easymock.EasyMock.verify;
 
 import java.rmi.RemoteException;
 
-import org.aleksz.ltj.soap.JiraSoapService;
-import org.aleksz.ltj.soap.RemoteIssue;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+
+import ee.ignite.logtojira.AppenderService;
+import ee.ignite.logtojira.AppenderServiceImpl;
+import ee.ignite.logtojira.Config;
+import ee.ignite.logtojira.Util;
+import ee.ignite.logtojira.soap.JiraSoapService;
+import ee.ignite.logtojira.soap.RemoteIssue;
 
 
 public class AppenderServiceImplTest {
@@ -64,7 +69,7 @@ public class AppenderServiceImplTest {
 	}
 
 	@Test
-	public void duplicateDoesNotExist() throws org.aleksz.ltj.soap.RemoteException, RemoteException {
+	public void duplicateDoesNotExist() throws ee.ignite.logtojira.soap.RemoteException, RemoteException {
 		RemoteIssue issue = new RemoteIssue();
 		issue.setSummary(SUMMARY);
 		issue.setDescription(DECRIPTION);
@@ -91,7 +96,7 @@ public class AppenderServiceImplTest {
 	}
 
 	@Test
-	public void duplicateDetectionHandlesSpecialChars() throws org.aleksz.ltj.soap.RemoteException, RemoteException {
+	public void duplicateDetectionHandlesSpecialChars() throws ee.ignite.logtojira.soap.RemoteException, RemoteException {
 		RemoteIssue issue = new RemoteIssue();
 		issue.setSummary(TRICKY_SUMMARY);
 		issue.setDescription(TRICKY_DECRIPTION);

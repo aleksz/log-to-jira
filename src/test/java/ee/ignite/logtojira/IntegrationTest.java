@@ -1,4 +1,4 @@
-package org.aleksz.ltj;
+package ee.ignite.logtojira;
 
 import static junit.framework.Assert.assertEquals;
 import static org.apache.commons.lang.StringEscapeUtils.escapeJava;
@@ -11,20 +11,21 @@ import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 
-import org.aleksz.ltj.plugin.MDCPlugin;
-import org.aleksz.ltj.plugin.TimestampPlugin;
-import org.aleksz.ltj.soap.JiraSoapService;
-import org.aleksz.ltj.soap.JiraSoapServiceServiceLocator;
-import org.aleksz.ltj.soap.RemoteAuthenticationException;
-import org.aleksz.ltj.soap.RemoteComment;
-import org.aleksz.ltj.soap.RemoteException;
-import org.aleksz.ltj.soap.RemoteIssue;
-import org.aleksz.ltj.soap.RemotePermissionException;
-import org.aleksz.ltj.soap.RemoteValidationException;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ee.ignite.logtojira.plugin.MDCPlugin;
+import ee.ignite.logtojira.plugin.TimestampPlugin;
+import ee.ignite.logtojira.soap.JiraSoapService;
+import ee.ignite.logtojira.soap.JiraSoapServiceServiceLocator;
+import ee.ignite.logtojira.soap.RemoteAuthenticationException;
+import ee.ignite.logtojira.soap.RemoteComment;
+import ee.ignite.logtojira.soap.RemoteException;
+import ee.ignite.logtojira.soap.RemoteIssue;
+import ee.ignite.logtojira.soap.RemotePermissionException;
+import ee.ignite.logtojira.soap.RemoteValidationException;
 
 
 public class IntegrationTest {

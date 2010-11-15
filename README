@@ -12,7 +12,7 @@ Appender parameters:
 Duplicate issues are not created. Appender considers issue to be duplicate in
 case if it has the same summary and description.
 
-<appender name="jira" class="org.aleksz.ltj.LogToJiraAppender">
+<appender name="jira" class="ee.ignite.logtojira.LogToJiraAppender">
 	<param name="url" value="http://localhost:2990/jira/rpc/soap/jirasoapservice-v2"/>
 	<param name="username" value="admin"/>
 	<param name="password" value="admin"/>
